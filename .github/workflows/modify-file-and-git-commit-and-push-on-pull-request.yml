@@ -16,10 +16,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run a one-line script
-        run: grep -r --include=\*.html 'searchterm' ./ | xargs sed -i 's/( href="[a-zA-Z0-9-]+)\.html"/\1"/g'
+        run: grep -rl --include=\*.html '.html' ./ | xargs sed -i -r 's/( href="[a-zA-Z0-9-]+)\.html"/\1"/g'
 
       - name: Commit data files  
         run: |
+          git config --local user.email "$(git log --format='%ae' HEAD^!)"
+          git config --local user.name "$(git log --format='%an' HEAD^!)"
           git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git pull github ${GITHUB_REF} --ff-only
 
