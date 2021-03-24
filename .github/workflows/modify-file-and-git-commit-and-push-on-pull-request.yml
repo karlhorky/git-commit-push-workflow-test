@@ -1,0 +1,28 @@
+name: Modify file and git commit and push
+
+on:
+  push:
+    - '**'      # matches every branch
+    - '!main'   # excludes main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Run a one-line script
+        run: grep -r --include=\*.html 'searchterm' ./ | xargs sed -i 's/( href="[a-zA-Z0-9-]+)\.html"/\1"/g'
+
+      - name: Commit data files  
+        run: |
+          git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+          git pull github ${GITHUB_REF} --ff-only
+
+          git add .
+
+          git commit -m "Update native model"
+          git push github HEAD:${GITHUB_REF}
