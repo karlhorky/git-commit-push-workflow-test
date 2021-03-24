@@ -2,8 +2,9 @@ name: Modify file and git commit and push
 
 on:
   push:
-    - '**'      # matches every branch
-    - '!main'   # excludes main
+    branches:
+      - '**'      # matches every branch
+      - '!main'   # excludes main
 
 jobs:
   build:
